@@ -75,3 +75,43 @@
 > *   **Country-Level Vulnerability Discovery:** Cross-tabulation exposed a stark divergence in healthcare system resilience:
 >     *   **Israel (`164 days`)** and **Malaysia (`138 days`)** accounted for **99.0% (302 out of 305 days)** of all Critical ICU Overload events in the dataset.
 >     *   Conversely, **Japan (`0 days`)** and **South Korea (`3 days`)** almost entirely avoided critical per-capita ICU exhaustion, successfully containing their hospital load within Low and Moderate regimes (`831/915 days` for Japan; `830/915 days` for South Korea).
+
+> **Log Entry #09 — Visualization #1 (Histogram) & Visual Occlusion Analysis (Phase 3.4 & 4.1)**
+> **Timestamp:** Monday, Nov 16, 2026 — 15:40 MYT (07:40 UTC)
+> 
+> *   **Visualization #1 Selection & Justification (Rubric 3c & 3d - Histogram):** Constructed an interactive multi-country Histogram (`px.histogram`, `nbins=30`, `opacity=0.65`) of `icu_per_million` with a clinical threshold marker at `25/M`. *Selection Justification:* A histogram is the required univariate/multivariate visualization for inspecting continuous frequency distributions, empirical skewness (`1.74`), and tail density past critical healthcare capacity thresholds.
+> *   **Information Design Critique (Overplotting / Visual Occlusion):** Identified that overlaying 4 semi-transparent country distributions on a single axis creates chromatic blending in the low-to-moderate range (`0–25/M`), increasing cognitive load when distinguishing overlapping bars without interactive hover/legend filtering. This directly motivates pairing the Histogram with **Visualization #2 (Box Plot)** to achieve non-overlapping, side-by-side quartile comparison.
+
+> **Log Entry #10 — Visualization #2 (Box Plot) & IQR Outlier Mechanics (Phase 3.5 & 4.2)**
+> **Timestamp:** Monday, Nov 16, 2026 — 16:13 MYT (08:13 UTC)
+> 
+> *   **Visualization #2 Selection & Justification (Rubric 3c & 3d - Box Plot):** Developed a categorical Box Plot (`px.box`) of `icu_per_million` across the 4 nations. *Selection Justification:* Eliminates the visual occlusion of overlaid histograms by isolating each country into a non-overlapping vertical lane, enabling direct comparison of medians (`50%`), interquartile spreads ($\text{IQR} = Q_3 - Q_1$), upper fences ($Q_3 + 1.5 \times \text{IQR}$), and extreme outlier days.
+> *   **Statistical Discovery (Israel vs. Malaysia Distribution Structure):**
+>     *   *Malaysia:* Exhibited the lowest Median (`4.51/M`) and a relatively compact box ($Q_1 = 1.63$, $Q_3 = 12.29$, $\text{IQR} = 10.66$), resulting in an upper fence of `27.43/M`. Consequently, Malaysia's peak crisis days (`27.5` to `46.94/M`) were mathematically classified as a dense cluster of **extreme upper outliers**.
+>     *   *Israel:* Exhibited the highest Median (`9.58/M`) and the widest interquartile spread ($Q_3 = 20.00/M$), pushing its upper fence to `~43.1/M`. Because high ICU loads occurred repeatedly across Israel's timeline, values between `25/M` and `43/M` were absorbed into its normal whisker range rather than flagged as outliers.
+
+> **Log Entry #11 — Visualization #3 (Line Chart) & Longitudinal Wave Dynamics (Phase 4.3)**
+> **Timestamp:** Monday, Nov 16, 2026 — 20:16 MYT (12:16 UTC)
+> 
+> *   **Visualization #3 Selection & Justification (Rubric 3d - Line Chart):** Constructed a multi-series longitudinal Line Chart (`px.line`) plotting `icu_per_million` over `date` (`2020-09-01` to `2023-03-04`). *Selection Justification:* Box plots and histograms aggregate away chronological order; a continuous time-series line chart is essential to reveal epidemic wave frequency, duration, seasonal timing, and post-intervention trajectory changes.
+> *   **Longitudinal Discovery (Explaining the Box Plot Paradox):**
+>     *   *Israel (Recurrent Multi-Wave Pattern):* Breached the `25/M` critical threshold **four separate times** (Oct 2020, Jan–Mar 2021, Sep 2021, and Feb 2022), explaining why its Box Plot interquartile range ($Q_3 = 20.0$) and upper fence (`43.1/M`) were stretched high.
+>     *   *Malaysia (Single Concentrated Surge + Post-Vaccine Suppression):* Breached the `25/M` threshold **only once** during a sustained 5-month Delta wave (`May 2021 – Oct 2021`, peaking at `46.94/M`). Following the completion of Malaysia's rapid adult vaccination drive in late 2021, Malaysia's ICU load dropped to the **lowest of all four nations** throughout 2022 and 2023—explaining why Malaysia had the lowest overall Median (`4.51/M`) and why its 2021 Delta surge appeared as isolated upper outliers in Chart 2.
+>     *   *(Side Note Recorded):* Scheduled a comprehensive "Study & Assessment Mode" review session upon project completion to solidify theoretical mastery.
+
+> **Log Entry #12 — Visualization #4 (Scatter Plot) & Phase 3 EDA Completion (Phase 3.6 & 4.4)**
+> **Timestamp:** Monday, Nov 16, 2026 — 21:01 MYT (13:01 UTC)
+> 
+> *   **Visualization #4 Selection & Justification (Rubric 3c & 3d - Scatter Plot):** Constructed a multivariate Scatter Plot (`px.scatter`) mapping `icu_per_million` (X-axis) against `deaths_per_million` (Y-axis), color-coded by `location` with contextual hover metadata (`date`, `cases_per_million`, `vax_per_hundred`). *Selection Justification:* A scatter plot is the foundational bivariate visualization required to empirically validate linear and non-linear relationships between two continuous ratio variables ($r = 0.789$).
+> *   **Empirical Discovery (Non-Linear Mortality Tipping Point):**
+>     *   Below the `25/M` threshold, daily mortality across all four nations remained relatively contained (`< 5` deaths/million), demonstrating that unstrained ICUs successfully buffered severe cases.
+>     *   Beyond the `25/M` Critical Overload line, mortality escalated non-linearly, peaking in **Malaysia on `2021-09-11`** (`17.44` deaths/million at `36.33` ICU patients/million, when vaccination was only at `116.11` doses/100 people during the Delta surge). This visually confirms that ICU saturation acts as a clinical tipping point for excess mortality.
+> *   **Milestone Achieved:** All statistical and visual requirements of **Section 3c (Exploratory Data Analysis)** are now 100% complete.
+
+> **Log Entry #13 — Visualizations #5 (Bar Chart) & #6 (Donut Chart) — Phase 4 Completion (Phase 4.5)**
+> **Timestamp:** Monday, Nov 16, 2026 — 21:23 MYT (13:23 UTC)
+> 
+> *   **Semantic Color Encoding (Information Design):** Implemented a standardized clinical traffic-light palette (`#2ecc71` Safe Green, `#f1c40f` Caution Gold, `#e67e22` Warning Orange, `#e74c3c` Critical Red) across categorical visualizations to align visual perception with clinical risk severity.
+> *   **Visualization #5 Selection & Justification (Rubric 3d - Bar Chart):** Constructed a Grouped Bar Chart (`px.bar`, `barmode='group'`, `text_auto=True`) comparing exact day counts across the 4 ICU stress regimes per country. *Selection Justification:* Grouped bar charts leverage pre-attentive length judgments along a common baseline, enabling immediate side-by-side comparison of discrete categorical counts (highlighting Israel's `164` and Malaysia's `138` critical days vs. Japan's `0` and South Korea's `3`).
+> *   **Visualization #6 Selection & Justification (Rubric 3d - Pie/Donut Chart):** Constructed a Donut Chart (`px.pie`, `hole=0.45`) displaying the part-to-whole proportion of pandemic days across the 4 stress regimes (`39.5%` Low, `41.5%` Moderate, `10.7%` High, `8.33%` Critical). *Selection Justification:* Restricted strictly to 4 mutually exclusive categories summing to `100%`, where a center cutout reduces area-distortion bias while summarizing overall system resilience (`81.0%` of all country-days remained within Low/Moderate capacity).
+> *   **Milestone Achieved:** All 6 required visualizations of **Section 3d (Data Visualization)** are now 100% complete.
